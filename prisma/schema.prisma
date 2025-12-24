@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model sample {
+  id   String @id
+  name String
+}
+
+model Customer {
+  id       String    @id
+  name     String
+  email    String    @unique
+  phone    String    @unique
+  wallet   Wallet?
+  // disini tanda tanya, misal ada customer yang tidak mempunyai wallet maka ditambah ? yaitu optional
+  comments Comment[]
+  likes    Like[]
+  loves    Product[] @relation("loves")
+
+  // @unique => tidak boleh duplicate
+  // @id => PK
+  // @@map => rename nama table menjadi customers karena biasanya nama table jamak
+  @@map("customers")
+}
+
+model Product {
+  id       String     @id
+  name     String
+  price    Int
+  stock    Int
+  category String
+  likedBy  Like[]
+  lovedBy  Customer[] @relation("loves")
+
+  @@map("products")
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  @@map("categories")
+}
+
+// One to One Model
+// One Wallet to One Customer
+// di Model Customer ditambahkan "wallet Wallet"  
+model Wallet {
+  id          String   @id
+  balance     Int
+  customer    Customer @relation(fields: [customer_id], references: [id])
+  customer_id String   @unique
+
+  @@map("wallet")
+}
+
+// Many to One / One to Many ke Customer
+// di customer wajib ditambahkan "comments Comment[]" di model nya
+model Comment {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  customer    Customer @relation(fields: [customer_id], references: [id])
+  customer_id String
+
+  @@map("comments")
+}
+
+model Like {
+  customer_id String
+  product_id  String
+  customer    Customer @relation(fields: [customer_id], references: [id])
+  product     Product  @relation(fields: [product_id], references: [id])
+
+  @@id([customer_id, product_id])
+  @@map("likes")
+}
