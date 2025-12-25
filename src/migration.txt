@@ -1,0 +1,27 @@
+2 Jenis Prisma Migrate:
+- Modal First Migration
+=> yaitu dimana programmer biasa memnbuat model terlebih dahulu, lalu prisma migrate akan membuat perintah SQL DDL nya.
+cara ini biasanya digunakan ketika membuat aplikasi baru atau melakukan perubahan baru
+
+- Command Line Modal First Migration
+=> npx prisma migrate dev --create-only --name migration_name
+
+secara otomatis akan dibuatkan file QL DDL dari model di folder migrations
+
+kita bisa review atau edit terlebih dahulu jika mau, dan pastikan jika ada yang perlu dirubah di SQL DDL harus dirubah di Model juga
+
+ketika selesai bisa jalankan migration menggunakan perintah :
+=> npx prisma migrate dev
+
+
+- Database First Migration
+=> yaitu dimana programmer biasa membuat SQL DDL nya terlebih dahulu, lalu menggunakan Prisma migrate untuk melakukan
+introspect database untuk membuat model sesuai dengan database. Cara ini biasanya dilakukan ketika menggunakan Prisma
+untuk database yang sudah ada.
+
+- command line DB First Migration
+=> npx prisma db pull (Harus diadjust lagi karena model menggunakan nama dari table)
+
+
+
+
